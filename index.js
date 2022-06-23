@@ -1,24 +1,31 @@
 const express = require('express');
-const mongoose = require('mongoose');
 require('dotenv').config();
+const db = require('./config/database');
 
 const app = express();
+//middleware 
+app.use(express.json());
 
 const port = process.env.PORT || 4000;
 
-// connection to mongodb
-mongoose.connect(process.env.MONGO_URI)
-.then(()=> {
-    console.log("connection stablished");
-})
-.catch((error)=> {
-    console.log('Error connecting to MongoDB', error);   
-});
-
-
 
 //routes
+app.use('/api', require('./routes/userRoutes'));
+app.use('/api', require('./routes/authRoutes'));
+
 app.get('/', (req, res) => {
     return res.send('Bienvenidos a mi aplicacion de tareas');
 });
-app.listen(port, () => {console.log("server is running: " + port)});
+
+app.get('*', (req, res) => {
+    return res.status(404).send('404 route not found');
+});
+
+db()
+    .then(() => {
+app.listen(port, () => {
+    console.log("server is running: " + port
+    )})})
+    .catch((error) => {
+        console.log('error conecting to mongodb', error);
+    });
